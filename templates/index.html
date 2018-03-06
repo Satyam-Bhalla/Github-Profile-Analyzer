@@ -1,7 +1,137 @@
 {% extends "layout.html" %}
+{% block body %}
 <body>
-  {% block body %}
-    <p> {{ data }}</p>
-  {% endblock %}
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="/signin/">Github Profile Analyzer</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        {% if data['name']==None %}
+        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome,{{data['username']}} </a></li>
+        {% else %}
+        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome,{{data['name']}} </a></li>
+        {% endif %}
+        <li><a href="/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<br><br>
+<div class="row">
+  <center>
+<div class="col-md-2">
+
+  <img id="avatar" src="{{data['avatar']}}">
+  <br>
+  <br>
+  {% if data['name']==None %}
+    <p><b>Name:</b> {{data['username']}} </p>
+  {% else %}
+    <p><b>Name:</b> {{data['name']}} </p>
+  {% endif %}
+
+  <p><b>Bio:</b> {{data['bio']}}</p>
+  <!-- <p><b>Email:</b> {{data['email']}}</p> -->
+  <p><b>Following:</b> {{data['following']}}</p>
+  <p><b>Followers:</b> {{data['followers']}}</p>
+  <hr>
+  <div>
+    <a href="/plot/">
+      <button id="plotButton" class="btn btn-success">Show Graph</button>
+    </a>
+  </div>
+  
+    <!-- <a href="/plot/" class="btn btn-success" >Show Graph</a> -->
+  </div>
+  <!-- <div id="plot">
+            
+  </div> -->
+</center>
+<div class="col-md-10">
+
+  <div class="table-responsive" >          
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Repo Name</th>
+        <th>Clones</th>
+        <th>Forks</th>
+        <th>Unique Visitors</th>
+        <th>Total Visitors</th>
+        <th>Stars</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in data['repos_list'] %}
+      <tr>
+        <td>{{i[0]}}</td>
+        <td>{{i[1]}}</td>
+        <td>{{i[2]}}</td>
+        <td>{{i[3]}}</td>
+        <td>{{i[4]}}</td>
+        <td>{{i[5]}}</td>
+        <td>{{i[6]}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+</div>
+<!-- <script type="text/javascript" src="https://cdn.plot.ly/plotly-latest.min.js"></script>"> -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- Numeric JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+<!-- <script type="text/javascript">
+  b = [];
+  {% for i in data['repos_list'][0:5] %}
+    b.push("{{i[1]}}");
+  {% endfor %}
+  var trace1 = {
+  x: b,
+  y: {{graph_y}},
+  type: 'bar',
+  text: b,
+  // text: {{graph_x}},
+  marker: {
+    color: '#60b044',
+    line: {
+      width: 0.5
+    }
+  }
+};
+
+var data = [trace1];
+
+var layout = {
+  title: 'Your Popular Repos',
+  font:{
+    family: 'Raleway, sans-serif'
+  },
+
+  showlegend: false,
+  xaxis: {
+    tickangle: -45
+  },
+  yaxis: {
+    zeroline: false,
+    gridwidth: 2
+  },
+  bargap :0.05
+};
+
+Plotly.newPlot('plot', data, layout);
+</script> -->
+
 </body>
 </html>
+{% endblock %}

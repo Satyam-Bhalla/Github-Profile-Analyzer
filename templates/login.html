@@ -1,13 +1,21 @@
 {% extends 'layout.html' %}
 {% block body %}
-  <form action="/signin/" method="post">
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/signin/">Github Profile Analyzer</a>
+    </div>
+  </div>
+</nav>
+<form action="/signin/" method="post" style="padding-top: 50px; ">
     <div class="form-container">
         <div class="form-header">
             <h1 class="unselectable">Sign in with Github Account</h1>
         </div>
         <div class="form-login">
           <label for="userid">Username</label>
-          <input type="text" id="userid" name="userid" class="input_field" required autocomplete="on" value="{{request.form.userid}}" />
+          <input type="text" id="userid" name="userid" class="input_field" required value="{{request.form.userid}}" autofocus="on" />
           <label for="password">Password</label>
           <input type="password" id="password" name="password" class="input_field" required value="{{request.form.password}}" />
           
@@ -20,8 +28,10 @@
           </div>
         </div>
         <div class="form-register">
-            <p  class="create-account">Build with love by <a target="_blank" href="https://github.com/Satyam-Bhalla">Satyam</a></p>
+            <p  class="create-account">Build with <span class="glyphicon glyphicon-heart"></span> by <a target="_blank" style="text-decoration: none;color: #101010" href="https://github.com/Satyam-Bhalla"><b>Satyam</b></a></p>
         </div>
     </div>
   </form>
+</body>
+  
 {% endblock %}

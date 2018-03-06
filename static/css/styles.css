@@ -113,3 +113,16 @@ p.create-account > a {
   color: red;
   margin: 4px;
 }
+
+#avatar{
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+
+#plot{
+  background-color: #f9f9f9;
+}
+#showGraph a:hover{
+  text-decoration: none;
+}

@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+{% block body %}
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="/signin/">Github Profile Analyzer</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        {% if data['name']==None %}
+        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome,{{data['username']}} </a></li>
+        {% else %}
+        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome,{{data['name']}} </a></li>
+        {% endif %}
+        <li><a href="/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+	<div class="container">
+		<div id="plot">
+				
+		</div>
+		<a href="/signin/">
+			<button class="btn btn-success">Go Back</button>
+		</a>
+		
+	</div>
+
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- Numeric JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+<script type="text/javascript">
+  b = [];
+  {% for i in data['repos_list'][0:5] %}
+    b.push("{{i[1]}}");
+  {% endfor %}
+    
+  
+//   var data = [{
+//   values: {{graph_y}},
+//   labels: b,
+//   type: 'pie'
+//   }];
+//   var layout = {
+//   height: 300,
+//   width: 200,
+//   showlegend: false
+// };
+(function() {
+var d3 = Plotly.d3;
+
+var WIDTH_IN_PERCENT_OF_PARENT = 100,
+    HEIGHT_IN_PERCENT_OF_PARENT = 60;
+
+var gd3 = d3.select('#plot')
+    .append('div')
+    .style({
+        width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+
+        height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+        'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+    });
+
+var gd = gd3.node();
+
+Plotly.plot(gd, [{
+    type: 'bar',
+    x: b,
+    y: {{graph_y}},
+    marker: {
+        color: '#60b044',
+        line: {
+            width: 2.5
+        }
+    }
+}], {
+    title: 'Popular Repos',
+    font: {
+        size: 14
+    }
+});
+
+window.onresize = function() {
+    Plotly.Plots.resize(gd);
+};
+
+})();
+// Plotly.newPlot('plot', data,layout);
+</script>
+</body>
+{% endblock %}
