@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body%}
+<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Github Profile Analyzer</a>
+    </div>
+    
+    </div>
+  </div>
+</nav>
+<div class="container" style="padding-top: 50px ">
+	<p>Oooopssss! Errors are everywhere! Try to Refresh!</p>
+	<a href="/signin/">
+			<button class="btn btn-success">Go Back</button>
+	</a>
+	<button onClick="window.location.reload()" class="btn btn-success">Refresh</button>
+</div>
+	
+</body>
+{% endblock %}

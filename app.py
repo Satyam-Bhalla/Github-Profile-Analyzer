@@ -11,14 +11,10 @@ app.secret_key = urandom(134)
 
 @app.route('/')
 def login_form():
-    return render_template("login.html")
-
-
-
-@app.route('/design/')
-def design_check():
-	return render_template('design.html')
-
+    if 'data' not in session:
+        return render_template("login.html")
+    else:
+        return redirect("/signin/")
 
 
 def resultant_data(user_info,username,password):
@@ -44,11 +40,11 @@ def resultant_data(user_info,username,password):
         response_unique_traffic_list = []
         response_total_traffic_list = []
         
-        raw_results_1 = ThreadPool(30).map(fetch_url, urls_1)
+        raw_results_1 = ThreadPool(20).map(fetch_url, urls_1)
         for response_clone, error in raw_results_1:
             if error is None:
                 response_clone_list.append(response_clone.json()['count'])
-        raw_results_2 = ThreadPool(30).map(fetch_url, urls_2)
+        raw_results_2 = ThreadPool(20).map(fetch_url, urls_2)
         for response_clone, error in raw_results_2:
             if error is None:
                 response_unique_traffic_list.append(response_clone.json()['uniques'])
@@ -83,32 +79,35 @@ def resultant_data(user_info,username,password):
 @app.route('/signin/',methods=["GET","POST"])
 def login_check():
     error = ''
-    if 'data' in session:
-        return render_template('index.html',data=session['data'],graph_x=session['graph_x'],graph_y=session['graph_y'])
-    elif request.method == "POST":
-	    attempted_username = request.form['userid']
-	    attempted_password = request.form['password']
-	    check_user = requests.get('https://api.github.com/user', auth=(attempted_username, attempted_password))
-	    if check_user.status_code == 200:
-	    	data=resultant_data(check_user,attempted_username, attempted_password)
-	    	if type(data)==dict:
-                    graph_x_list = []
-                    graph_y_list = []
+    try:
+        if 'data' in session:
+            return render_template('index.html',data=session['data'],graph_x=session['graph_x'],graph_y=session['graph_y'])
+        elif request.method == "POST":
+    	    attempted_username = request.form['userid']
+    	    attempted_password = request.form['password']
+    	    check_user = requests.get('https://api.github.com/user', auth=(attempted_username, attempted_password))
+    	    if check_user.status_code == 200:
+    	    	data=resultant_data(check_user,attempted_username, attempted_password)
+    	    	if type(data)==dict:
+                        graph_x_list = []
+                        graph_y_list = []
 
-                    for i in range(len(data['repos_list'][0:5])):
-                        graph_x_list.append(str(data['repos_list'][i][1]))
-                        graph_y_list.append(data['repos_list'][i][-1])
-                    session['data'] = data
-                    session['graph_x'] = graph_x_list
-                    session['graph_y'] = graph_y_list
-                    if 'data' in session:
-                        return render_template('index.html',data=session['data'],graph_x=session['graph_x'],graph_y=session['graph_y'])
-	    	else:
-                    return render_template('login.html',error=data)
-	    else:
-	    	return render_template("login.html",error=check_user.json()['message'])
-    else:
-        return redirect("//")
+                        for i in range(len(data['repos_list'][0:5])):
+                            graph_x_list.append(str(data['repos_list'][i][1]))
+                            graph_y_list.append(data['repos_list'][i][-1])
+                        session['data'] = data
+                        session['graph_x'] = graph_x_list
+                        session['graph_y'] = graph_y_list
+                        if 'data' in session:
+                            return render_template('index.html',data=session['data'],graph_x=session['graph_x'],graph_y=session['graph_y'])
+    	    	else:
+                        return render_template('login.html',error=data)
+    	    else:
+    	    	return render_template("login.html",error=check_user.json()['message'])
+        else:
+            return redirect("//")
+    except Exception as e:
+        return render_template("500.html")
 
 @app.route('/plot/')
 def draw_plot():
@@ -133,5 +132,10 @@ def logout():
 def page_not_found(e):
     return render_template("404.html")
 
-app.run(debug=True)
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template("500.html")
+
+if __name__ == "__main__":
+    app.run(debug = True,port = 80)
 
