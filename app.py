@@ -56,18 +56,11 @@ def resultant_data(user_info,username,password):
         keys_for_dict = ['avatar','email','followers','following','name','username','bio','url','public_repos','repos_list']
         values_for_dict = [user_info_json['avatar_url'],user_info_json['email'],user_info_json['followers'],user_info_json['following'],user_info_json['name'],user_info_json['login'],user_info_json['bio'],user_info_json['url'],user_info_json['public_repos'],repos_list]
         result_dict = dict(zip(keys_for_dict,values_for_dict))
-#         graph_dict = deepcopy(result_dict)
         for i in result_dict['repos_list']:
             i.append(i[1]+i[2]+i[3]+i[5])
         result_dict['repos_list'].sort(key=lambda x:x[-1],reverse=True)
         for i in range(len(result_dict['repos_list'])):
             result_dict['repos_list'][i].insert(0,i+1)
-#         for i in range(len(result_dict['repos_list'])):
-#             if i==5:
-#                 break
-#             else:
-#                 graph_x.append(str(result_dict['repos_list'][i][1]))
-#                 graph_y.append(result_dict['repos_list'][i][-1])
         return result_dict
     except Exception as e:
         return str(e)
