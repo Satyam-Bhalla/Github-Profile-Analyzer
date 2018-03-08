@@ -13,7 +13,7 @@ def login_form():
     if 'data' not in session:
         return render_template("login.html")
     else:
-        return redirect("/signin/")
+        return render_template("index.html",data=session['data'],graph_y=session['graph_y'])
 
 
 def resultant_data(user_info,username,password):
@@ -81,23 +81,22 @@ def login_check():
     	    if check_user.status_code == 200:
     	    	data=resultant_data(check_user,attempted_username, attempted_password)
     	    	if type(data)==dict:
-                        graph_x_list = []
+                        # graph_x_list = []
                         graph_y_list = []
 
                         for i in range(len(data['repos_list'][0:5])):
-                            graph_x_list.append(str(data['repos_list'][i][1]))
+                            # graph_x_list.append(str(data['repos_list'][i][1]))
                             graph_y_list.append(data['repos_list'][i][-1])
                         session['data'] = data
-                        session['graph_x'] = graph_x_list
                         session['graph_y'] = graph_y_list
                         if 'data' in session:
-                            return render_template('index.html',data=session['data'],graph_x=session['graph_x'],graph_y=session['graph_y'])
+                            return render_template('index.html',data=session['data'],graph_y=session['graph_y'])
     	    	else:
                         return render_template('login.html',error=data)
     	    else:
     	    	return render_template("login.html",error=check_user.json()['message'])
         else:
-            return redirect("//")
+            return render_template("login.html")
     except Exception as e:
         return render_template("500.html")
 
@@ -105,9 +104,9 @@ def login_check():
 def draw_plot():
     error = ''
     if 'data' in session:
-        return render_template("plot.html",graph_x = session['graph_x'],graph_y = session['graph_y'],data=session['data'])
+        return render_template("plot.html",graph_y = session['graph_y'],data=session['data'])
     else:
-        return render_template("login.html",error=check_user.json()['message'])
+        return render_template("login.html")
 
 @app.route('/logout/')
 def logout():
@@ -118,7 +117,7 @@ def logout():
         session.pop('graph_y',None)
         return redirect("//")
     else:
-        return render_template("login.html",error=check_user.json()['message'])
+        return render_template("login.html")
  
 @app.errorhandler(404)
 def page_not_found(e):
@@ -133,5 +132,5 @@ host="0.0.0.0"
 
 
 if __name__ == "__main__":
-    app.run(debug = True,port = 80)
+    app.run(debug = True,port = port)
 
