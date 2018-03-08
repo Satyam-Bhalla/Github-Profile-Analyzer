@@ -2,12 +2,11 @@ from flask import Flask, render_template, redirect,url_for, request, session, fl
 from wtforms import Form
 import requests
 from multiprocessing.pool import ThreadPool
-from copy import deepcopy
-from os import urandom
+import os
 
 
 app = Flask(__name__)
-app.secret_key = urandom(134)
+app.secret_key = os.urandom(134)
 
 @app.route('/')
 def login_form():
@@ -128,6 +127,10 @@ def page_not_found(e):
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template("500.html")
+
+port=os.environ.get("port", 80)
+host="0.0.0.0"
+
 
 if __name__ == "__main__":
     app.run(debug = True,port = 80)
